@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"time"
+	"runtime"
 
 	xproxy "golang.org/x/net/proxy"
 	ve "main/veclient"
@@ -54,10 +55,14 @@ type CLIArgs struct {
 	refreshRetry        time.Duration
 	certChainWorkaround bool
 	caFile              string
+	serviceInstall      bool
+	serviceUninstall    bool
+	serviceName         string
 }
 
-func parse_args() CLIArgs {
-	var args CLIArgs
+var args CLIArgs
+
+func init() {
 	flag.StringVar(&args.country, "country", "nl", "desired proxy location")
 	flag.BoolVar(&args.listCountries, "list-countries", false, "list available countries and exit")
 	flag.StringVar(&args.bindAddress, "bind-address", "127.0.0.1:18090", "HTTP proxy listen address")
@@ -78,6 +83,12 @@ func parse_args() CLIArgs {
 	flag.BoolVar(&args.certChainWorkaround, "certchain-workaround", true,
 		"add bundled cross-signed intermediate cert to certchain to make it check out on old systems")
 	flag.StringVar(&args.caFile, "cafile", "", "use custom CA certificate bundle file")
+
+    if runtime.GOOS == "windows" {
+    }
+}
+
+func parse_args() CLIArgs {
 	flag.Parse()
 	if args.country == "" {
 		arg_fail("Country can't be empty string.")
@@ -99,9 +110,10 @@ func proxyFromURLWrapper(u *url.URL, next xproxy.Dialer) (xproxy.Dialer, error) 
 
 func run() int {
 	args := parse_args()
+
 	if args.showVersion {
 		fmt.Println(version)
-		return 0
+		os.Exit(0)
 	}
 
 	logWriter := NewLogWriter(os.Stderr)
@@ -213,10 +225,6 @@ func run() int {
 		return 12
 	}
 
-//	if args.listProxies {
-//		return printProxies(ips, veclient)
-//	}
-
 	if len(ips.Addresses) == 0 {
 		mainLogger.Critical("Empty endpoint!")
 		return 13
@@ -294,5 +302,6 @@ func printCountries(logger *CondLogger, timeout time.Duration, veclient *ve.VECl
 }
 
 func main() {
+	CheckRunService()
 	os.Exit(run())
 }

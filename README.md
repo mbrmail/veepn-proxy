@@ -8,12 +8,15 @@ Standalone VeePN VPN client.
 Just run it and it'll start a plain HTTP proxy server forwarding traffic through "VeePN VPN" proxies of your choice.
 By default the application listens on 127.0.0.1:18090.
 
+You may install it as windows service.
+
 ## Features
 
 * Cross-platform (Windows/Mac OS/Linux/Android (via shell)/\*BSD)
 * Uses TLS for secure communication with upstream proxies
 * Zero configuration
 * Simple and straightforward
+* Run's as windows service
 
 ## Installation
 
@@ -71,6 +74,9 @@ $ curl --proxy 127.0.0.1:18090 https://api.ipify.org
 | proxy | string | sets base proxy to use for all dial-outs. Format: <http|https|socks5|socks5h>://[login:password@]host[:port] Examples: http://user:password@192.168.1.1:3128, socks5://10.0.0.1:1080 |
 | refresh | duration | login refresh interval (default 4h0m0s) |
 | refresh-retry | duration | login refresh retry interval (default 5s) |
+| service-install | - | install program as windows service |
+| service-name | string | windows service name (default "Veepn-proxy") |
+| service-uninstall | - | uninstall windows service |
 | timeout | duration | timeout for network operations (default 10s) |
 | verbosity | int | logging verbosity (10 - debug, 20 - info, 30 - warning, 40 - error, 50 - critical) (default 20) |
 | version | - | show program version and exit |
